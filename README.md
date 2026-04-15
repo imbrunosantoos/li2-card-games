@@ -32,6 +32,6 @@ gcc -o golf main.c
 ```
 ## Authors
 
-**Bruno Santos** - [github.com/imbrunosantoos]
+**[Bruno Santos](github.com/imbrunosantoos)**
 
-**Goncalo Cipreste** - [github.com/goncalocipreste-rgb]
+**[Goncalo Cipreste](github.com/goncalocipreste-rgb)**
