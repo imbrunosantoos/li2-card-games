@@ -16,7 +16,7 @@ static void handleCommand(GameState *g, Command cmd) {
         displayInvalidMove();
 }
 
-int main(void) {
+int playGolf(void) {
     GameState g;
     gameInit(&g);      // inicializa e baralha
     displayHelp();     // mostra comandos
