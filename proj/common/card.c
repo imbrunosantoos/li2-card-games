@@ -14,3 +14,9 @@ int cardIsPlayable(Card top, Card c) {
     if (diff < 0) diff = -diff;     // Valor absoluto (sempre positivo)
     return (diff == 1);             // Apenas é jogável se a diferença for exatamente 1
 }
+
+// Devolve a cor da carta (0=preto, 1=vermelho)
+int cardColor(Card c) {
+   if (c.suit == CLUBS || c.suit == SPADES)return 0; // da preto
+    else return 1; //da vermelho
+}

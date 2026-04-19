@@ -2,7 +2,7 @@
 
 // Inicia a pilha - começa sempre vazia
 void pileInit (Pile *p) {
-    p -> size = 0; // 0 cartas, ainda nao temc artas
+    p -> size = 0; // 0 cartas, ainda nao tem cartas
 }
 
 // Coloca uma carta no topo da pilha
@@ -36,7 +36,7 @@ Card pileTop (Pile *p) {
 
 // Devolve quantas cartas do topo formam uma sequencia valida
 int pileSequenceSize(Pile *p){
-    int n = 1; // começa em 1 pq o topo conta sempre
+    int n = 1; // a sequencia tem pelo menos uma carta valida que e a do topo
     int i = p->size - 1; // indice do topo
 
     while (i > 0) {
@@ -54,27 +54,20 @@ int pileSequenceSize(Pile *p){
     return n;
 }
 
-// Move n cartas do topo de src para dst
+// Move n cartas de src para dst
 int pileMoveSequence(Pile *src, Pile *dst, int n) {
-    // verifica se src tem cartas suficientes
-    if (src->size < n) return 0;
-
-    // verifica se dst tem espaco suficiente
-    if (dst->size + n > PILE_MAX) return 0;
-
-    // indice de onde começa a sequencia em src
+    // calcula onde comeca a sequencia que vais mover
     int inicio = src->size - n;
-
-    // copia as n cartas para dst
-    int i = inicio;
-    while (i < src->size) {
-        dst->cards[dst->size] = src->cards[i]; // copia carta
-        dst->size++;                            // dst cresce
-        i++;
+    
+    // copia cada uma das n cartas para dst
+    while (inicio < src->size) {
+        dst->cards[dst->size] = src->cards[inicio];  // copia a carta
+        dst->size++;                                  // dst cresce
+        inicio++;                                     // proximo carta
     }
-
+    
     // remove as n cartas de src
     src->size = src->size - n;
-
-    return 1; // sucesso
+    
+    return 1;  // sucesso
 }
