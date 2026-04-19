@@ -1,9 +1,9 @@
 #ifndef SIMON_GAME_H
 #define SIMON_GAME_H
 
-#include "card.h"
-#include "deck.h"
-#include "pile.h"
+#include "../../../common/card.h"
+#include "../../../common/deck.h"
+#include "../../../common/pile.h"
 
 // Esta estrutura guarda o estado atual de uma partida
 typedef struct {

@@ -1,8 +1,8 @@
 #ifndef GAME_H
 #define GAME_H 
 
-#include "deck.h"
-#include "pile.h"
+#include "../../../common/deck.h"
+#include "../../../common/pile.h"
 
 #define DISCARD_MAX 52 // Máximo de cartas na pilha de descarte 
 #define NUM_PILES 7 // O jogo possui 7 pilhas de cartas na mesa

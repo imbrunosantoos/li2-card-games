@@ -19,7 +19,9 @@ void playSimon () {
         if (result == 99) {
             game = backup; //se o jogador digitou 99, voltamos a jogada atras
         }
-        else if (result == 1) {
+        else if (result == 88) { //o jogador pediu ajuda, mostramos a dica.
+            displayHint(&game);  //o backup continua o mesmo porque não mexemo na mesa
+        } else if (result == 1) {
             backup = temp;  //se a jogada for valida, o estado anterior do jogo passa a ser o backup
         }
     }
