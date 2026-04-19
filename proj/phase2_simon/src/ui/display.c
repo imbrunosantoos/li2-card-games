@@ -59,7 +59,7 @@ void displayBoard(SimonState *s) {
 
 // Mostra os comandos disponiveis
 void displayHelp(void) {
-    printf("\nComandos: Escolhe origem (1-10), destino (1-10) e quantidade de cartas\n");
+    printf("\nComandos: Escolhe origem (1-10); Destino (1-10); Quantidade de cartas; Undo (99)\n");
 }
 
 // Mostra mensagem de vitoria

@@ -5,7 +5,7 @@ void requestMove (SimonState *s) {
     int readOrigin, readDest, quant;    //variaveis origem, destino e quantidade
 
     printf ("\n---------- MENU DE JOGADA ----------\n");
-    printf ("ORIGEM (1-10): ");
+    printf ("ORIGEM (1-10) ou Undo (99): ");
     scanf(" %d", &readOrigin);
     printf ("DESTINO (1-10): ");
     scanf(" %d", &readDest);
@@ -15,6 +15,9 @@ void requestMove (SimonState *s) {
     int origin = readOrigin - 1;    //como as colunas vão estar numeradas de 1 a 10, entao ao comando que o jogador colocar, 
     int dest = readDest - 1;        //retiramos 1 para converter para indice 
 
+    if (readOrigin == 99) {
+    return 99; //sinal de undo
+    }   
     if (quant == 1) {
         if (simonMove(s, origin, dest) == 1) {  //apenas move uma carta, s (estado do jogo), origin (coluna de origem) e dest (coluna em que a carta vai ser colocada)
             printf ("Concluído.\n");            //tem de ser igual a 1 porque signifca que a operação foi concluida sem problemas 

@@ -3,6 +3,6 @@
 
 #include "../logic/game.h"
 
-void requestMove (SimonState *s);   //lê a jogada do jogador
+int requestMove (SimonState *s);   //como agora o jogador tem duas opções de jogada, jogada normal ou undo, a função precisa de devolver um comando
 
 #endif
