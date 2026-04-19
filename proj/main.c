@@ -5,13 +5,13 @@ void playGolf ();
 void playSimon ();
 
 int main() {
-    int option = -1;    //usamos o -1 que é para garantir que o ciclo comece 
+    int option = -1;
     while (option != 0) {
-        option = showMenu();
+        option = mostrarMenuPrincipal();
         if (option == 1) {
             playGolf();
         }
-        if (option == 2){
+        if (option == 2) {
             playSimon();
         }
         if (option != 1 && option != 2 && option != 0) {

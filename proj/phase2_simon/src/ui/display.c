@@ -2,7 +2,7 @@
 #include <stdio.h>
 
 // Simbolos UTF-8 para cada naipe
-static const char *suitSymbol[] = {
+static const char *simonSuitSymbol[] = {
     "♣", // CLUBS = 0
     "♦", // DIAMONDS = 1
     "♥", // HEARTS = 2
@@ -10,7 +10,7 @@ static const char *suitSymbol[] = {
 };
 
 // Letras para os valores das cartas
-static const char *valueStr[] = {
+static const char *simonValueStr[] = {
     "?",  // 0 nao usado
     "A",  // 1
     "2","3","4","5","6","7","8","9","10",
@@ -20,15 +20,15 @@ static const char *valueStr[] = {
 };
 
 // Imprime uma carta formatada ex: [3♣] ou [10♦]
-static void printCard(Card c) {
+static void simonPrintCard(Card c) {
     if (c.value == 10)
-        printf("|%s%s|", valueStr[c.value], suitSymbol[c.suit]);
+        printf("|%s%s|", simonValueStr[c.value], simonSuitSymbol[c.suit]);
     else
-        printf("| %s%s|", valueStr[c.value], suitSymbol[c.suit]);
+        printf("| %s%s|", simonValueStr[c.value], simonSuitSymbol[c.suit]);
 }
 
 // Mostra o tabuleiro com as 10 colunas
-void displayBoard(SimonState *s) {
+void simonDisplayBoard(SimonState *s) {
     int linha = 0;
     int col;
     
@@ -44,7 +44,7 @@ void displayBoard(SimonState *s) {
         while (col < 10) {
             // verifica se ha carta nesta posicao
             if (linha < s->columns[col].size) {
-                printCard(s->columns[col].cards[linha]);
+                simonPrintCard(s->columns[col].cards[linha]);
                 printf("  ");
             } else {
                 printf("       "); // espaco vazio se nao ha carta
@@ -58,16 +58,24 @@ void displayBoard(SimonState *s) {
 }
 
 // Mostra os comandos disponiveis
-void displayHelp(void) {
+void simonDisplayHelp(void) {
     printf("\nComandos: Escolhe origem (1-10); Destino (1-10); Quantidade de cartas; Undo (99)\n");
 }
 
 // Mostra mensagem de vitoria
-void displayWin(void) {
+void simonDisplayWin(void) {
     printf("\n  PARABENS! Ganhaste o jogo!  \n");
 }
 
 // Mostra erro de jogada invalida
-void displayInvalidMove(void) {
+void simonDisplayInvalidMove(void) {
     printf("\n Jogada invalida!\n");
+}
+
+// Mostra uma dica ao jogador
+void displayHint(SimonState *s) {
+    (void)s;  // parametro nao usado ainda
+    printf("\n--- DICA ---\n");
+    printf("Tenta encontrar sequencias do mesmo naipe em ordem decrescente!\n");
+    printf("Exemplo: K♥, Q♥, J♥, 10♥, ..., A♥\n");
 }

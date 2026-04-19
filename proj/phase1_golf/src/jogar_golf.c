@@ -13,23 +13,23 @@ static void handleCommand(GameState *g, Command cmd) {
     }
 
     if (!ok && cmd != CMD_QUIT)
-        displayInvalidMove();
+        golfDisplayInvalidMove();
 }
 
 int playGolf(void) {
     GameState g;
     gameInit(&g);      // inicializa e baralha
-    displayHelp();     // mostra comandos
+    golfDisplayHelp();     // mostra comandos
 
     Command cmd;
     do {
-        displayBoard(&g);         // mostra tabuleiro
+        golfDisplayBoard(&g);         // mostra tabuleiro
         cmd = inputRead();        // lê comando do jogador
         handleCommand(&g, cmd);   // executa
     } while (cmd != CMD_QUIT && !gameIsOver(&g));
 
     if (gameIsOver(&g))
-        displayWin();
+        golfDisplayWin();
 
     return 0;
 }

@@ -4,7 +4,7 @@
 #include <string.h>
 
 // Símbolos UTF-8 para cada naipe, a posição corresponde ao valor do enum
-static const char *suitSymbol[] = {
+static const char *golfSuitSymbol[] = {
     "♣", // CLUBS    = 0
     "♦", // DIAMONDS = 1
     "♥", // HEARTS   = 2
@@ -12,7 +12,7 @@ static const char *suitSymbol[] = {
 };
 
 // Letras para os valores especiais, a posição corresponde ao valor do enum
-static const char *valueStr[] = {
+static const char *golfValueStr[] = {
     "?",  // 0 — não usado
     "A",  // 1
     "2","3","4","5","6","7","8","9","10",
@@ -22,22 +22,22 @@ static const char *valueStr[] = {
 };
 
 // Imprime uma carta formatada ex: [3♣] ou [7♦]
-static void printCard(Card c) {
+static void golfPrintCard(Card c) {
     if (c.value == 10)
-        printf("|%s%s|", valueStr[c.value], suitSymbol[c.suit]);
+        printf("|%s%s|", golfValueStr[c.value], golfSuitSymbol[c.suit]);
     else
-        printf("| %s%s|", valueStr[c.value], suitSymbol[c.suit]);
+        printf("| %s%s|", golfValueStr[c.value], golfSuitSymbol[c.suit]);
 }
 
 // Mostra o tabuleiro completo, com o descarte, o baralho e os 7 montes
-void displayBoard (GameState *g) {
+void golfDisplayBoard (GameState *g) {
     int linha = 0;
     int col;
     Card c;
     printf("\n--- GOLF SOLITAIRE ---\n");
     printf("Descarte: ");
     if (gameDiscardTop(g, &c)) {
-        printCard(c);
+        golfPrintCard(c);
     } else {
         printf("[  ]");
     }
@@ -48,7 +48,7 @@ void displayBoard (GameState *g) {
         col = 0;
         while (col < 7) {
             if (linha < g->tableu[col].size) {
-                printCard(g->tableu[col].cards[linha]);
+                golfPrintCard(g->tableu[col].cards[linha]);
                 printf("  ");
             } else {
                 printf("       "); 
@@ -60,14 +60,14 @@ void displayBoard (GameState *g) {
     }
 }
 
-void displayHelp(void) {
+void golfDisplayHelp(void) {
     printf("\nComandos: (1-7) Escolher Pilha | (d) Biscar | (q) Sair\n");
 }
 
-void displayWin(void) {
+void golfDisplayWin(void) {
     printf("\n  PARABENS! Ganhaste o jogo!  \n");
 }
 
-void displayInvalidMove(void) {
+void golfDisplayInvalidMove(void) {
     printf("\n Jogada invalida!\n");
 }

@@ -12,10 +12,10 @@ void playSimon () {
     backup = game;  //aqui o backup é o estado inicial
 
     while (simonIsOver (&game) == 0) {  //enquanto jogo não acabou
-        displayBoard (&game);           //mostra as cartas na mesa
-        displayHelp();                  //instruções para jogar
+        simonDisplayBoard (&game);           //mostra as cartas na mesa
+        simonDisplayHelp();                  //instruções para jogar
         temp = game;    // guarda o estado do jogo
-        int result = requesteMove(&game);   //o requesteMove pede um movimento ao jogador
+        int result = requestMove(&game);   //o requestMove pede um movimento ao jogador
         if (result == 99) {
             game = backup; //se o jogador digitou 99, voltamos a jogada atras
         }
@@ -25,6 +25,6 @@ void playSimon () {
             backup = temp;  //se a jogada for valida, o estado anterior do jogo passa a ser o backup
         }
     }
-    displayBoard (&game);
-    displayWin();
+    simonDisplayBoard (&game);
+    simonDisplayWin();
 }
