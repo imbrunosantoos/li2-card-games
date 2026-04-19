@@ -23,9 +23,4 @@ Card createCard(int value, Suit suit);
 // Verifica se uma carta pode ser jogada em cima de outra
 int cardIsPlayable(Card top, Card c);
 
-//Devolve a cor da carta(se for preto=0 e se for vermelho =1)
-// Paus e Espadas = PRETO
-// Ouros e Copas = VERMELHO
-int cardColor(Card c);
-
 #endif
