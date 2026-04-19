@@ -16,6 +16,9 @@ typedef struct {
 // Inicia uma pilha vazia
 void pileInit (Pile *p);
 
+// Devolve o tamanho da pilha
+int pileSize(Pile *p);
+
 // Adiciona carta no topo
 int pilePush (Pile *p, Card c);
 

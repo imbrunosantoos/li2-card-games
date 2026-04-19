@@ -5,6 +5,11 @@ void pileInit (Pile *p) {
     p -> size = 0; // 0 cartas, ainda nao tem cartas
 }
 
+// Devolve o tamanho da pilha
+int pileSize(Pile *p) {
+    return p->size;
+}
+
 // Coloca uma carta no topo da pilha
 int pilePush (Pile *p, Card c) {
     if (p -> size >= PILE_MAX) return 0; // pilha cheia
