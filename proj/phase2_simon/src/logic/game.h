@@ -1,5 +1,5 @@
-#ifndef GAME_H
-#define GAME_H
+#ifndef SIMON_GAME_H
+#define SIMON_GAME_H
 
 #include "card.h"
 #include "deck.h"

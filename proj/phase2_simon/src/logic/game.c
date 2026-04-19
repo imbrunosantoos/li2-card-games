@@ -1,28 +1,42 @@
 #include "game.h"
 
-// Esta função prepara o jogo do zero
-void simonInit(SimonState *s) {
-    int col, c, i, limit; // variaveis coluna, carta e limite
-    Card temp;
-
-    deckInit(&s->deck);
-    deckShuffle(&s->deck);
-
-    for (i = 0; i < 10; i++) { //começamos por pôr todas as 10 colunas vazias
+// Inicializa as 10 colunas vazias
+static void simonInitColumns(SimonState *s) {
+    int i;
+    for (i = 0; i < 10; i++) {
         pileInit(&s->columns[i]);
     }
-    for (col = 0; col < 10; col++) { //distribuir as cartas pelas colunas
-        if (col < 3) {
-            limit = 8;  //limite de 8 cartas para as primeiras 3 colunas
-        } else {
-            limit = 8 - (col - 2);  // para distribuir de forma decrescente para o resto das colunas, na coluna correspondente, 
-        }                           //estabelecemos um limite de 8 - (o numero da coluna - 2) para que fique sempre com menos 1 carta que a coluna anterior
-        for (c = 0; c < limit; c++) {       //vai buscar cartas ao baralho e mete-as nas colunas ate ficarem com o nº de cartas limit
+}
+
+// Calcula o limite de cartas para uma coluna (8 para as 3 primeiras, depois decrescente)
+static int simonGetColumnLimit(int col) {
+    if (col < 3) {
+        return 8;
+    }
+    return 8 - (col - 2);
+}
+
+// Distribui as cartas pelas colunas segundo os limites
+static void simonDealCards(SimonState *s) {
+    int col, c, limit;
+    Card temp;
+
+    for (col = 0; col < 10; col++) {
+        limit = simonGetColumnLimit(col);
+        for (c = 0; c < limit; c++) {
             if (deckDraw(&s->deck, &temp) == 1) {
                 pilePush(&s->columns[col], temp);
             }
         }
     }
+}
+
+// Esta função prepara o jogo do zero
+void simonInit(SimonState *s) {
+    deckInit(&s->deck);
+    deckShuffle(&s->deck);
+    simonInitColumns(s);
+    simonDealCards(s);
 }
 
 // Esta função serve para mover apenas uma carta de cada vez
@@ -57,40 +71,64 @@ int simonMove(SimonState *s, int topCol, int destCol) {
     return 0;
 }
 
-//move um grupo de várias cartas juntas
-int simonMoveSequence(SimonState *s, int topCol, int destCol, int numCards) {
+// Valida se um grupo de cartas está em sequência válida (mesmo naipe, valores em escada)
+static int simonValidateSequence(SimonState *s, int topCol, int numCards) {
     int i, total;
-    Card aux;
-    Card c; 
-
     total = pileSize(&s->columns[topCol]);
 
-    if (numCards <= 0 || numCards > total) {  //para não tentarmos mover zero cartas ou mais do que existem
-        return 0;
-    }
-    for (i = 0; i < numCards - 1; i++) {                                //confirmar se o grupo de cartas que queremos mover está bem organizado
-        Card c1 = s->columns[topCol].cards[total - numCards + i];       //têm de ter todas o mesmo naipe e estar em escada (ex: 7, 6, 5...)
+    for (i = 0; i < numCards - 1; i++) {
+        Card c1 = s->columns[topCol].cards[total - numCards + i];
         Card c2 = s->columns[topCol].cards[total - numCards + i + 1];
         if (c1.suit != c2.suit || c1.value != c2.value + 1) {
             return 0;
         }
     }
-    //se a primeira carta dessa sequencia pode ir para a coluna de destino
-    c = s->columns[topCol].cards[total - numCards];
-    if (pileIsEmpty(&s->columns[destCol]) == 0) {
-        Card target = pileTop(&s->columns[destCol]);
-        if (c.value != target.value - 1) {
-            return 0;
-        }
+    return 1;
+}
+
+// Valida se a primeira carta da sequência pode ser movida para a coluna de destino
+static int simonCanMoveToDest(SimonState *s, int topCol, int destCol, int numCards) {
+    int total = pileSize(&s->columns[topCol]);
+    Card c = s->columns[topCol].cards[total - numCards];
+
+    if (pileIsEmpty(&s->columns[destCol]) == 1) {
+        return 1;
     }
-    for (i = 0; i < numCards; i++) {    //se for possivel, primeiro copiamos as cartas para o destino
+    Card target = pileTop(&s->columns[destCol]);
+    return (c.value == target.value - 1) ? 1 : 0;
+}
+
+// Executa a movimentação das cartas
+static void simonExecuteMove(SimonState *s, int topCol, int destCol, int numCards) {
+    int i, total;
+    Card aux;
+    total = pileSize(&s->columns[topCol]);
+
+    for (i = 0; i < numCards; i++) {
         aux = s->columns[topCol].cards[total - numCards + i];
         pilePush(&s->columns[destCol], aux);
     }
-    for (i = 0; i < numCards; i++) {    //depois limpamos as cartas da coluna de onde elas vieram
-        Card lixo; 
+    for (i = 0; i < numCards; i++) {
+        Card lixo;
         pilePop(&s->columns[topCol], &lixo);
     }
+}
+
+//move um grupo de várias cartas juntas
+int simonMoveSequence(SimonState *s, int topCol, int destCol, int numCards) {
+    int total;
+    total = pileSize(&s->columns[topCol]);
+
+    if (numCards <= 0 || numCards > total) {
+        return 0;
+    }
+    if (simonValidateSequence(s, topCol, numCards) == 0) {
+        return 0;
+    }
+    if (simonCanMoveToDest(s, topCol, destCol, numCards) == 0) {
+        return 0;
+    }
+    simonExecuteMove(s, topCol, destCol, numCards);
     return 1;
 }
 
@@ -103,29 +141,42 @@ int simonIsOver(SimonState *s) {
     return 1;   //se todas as colunas estiverem vazias o jogo acabou
 }
 
+// Verifica se uma coluna tem uma sequência completa de Rei a Ás
+static int simonCheckSequence(SimonState *s, int col) {
+    int size = pileSize(&s->columns[col]);
+    int c, ok = 0;
+
+    if (size < 13) {
+        return 0;
+    }
+    if (s->columns[col].cards[size - 13].value != 12) {
+        return 0;
+    }
+    for (c = 0; c < 12; c++) {
+        Card bellowCard = s->columns[col].cards[size - 13 + c];
+        Card aboveCard = s->columns[col].cards[size - 13 + c + 1];
+        if (bellowCard.suit == aboveCard.suit && bellowCard.value == aboveCard.value + 1) {
+            ok++;
+        }
+    }
+    return (ok == 12) ? 1 : 0;
+}
+
+// Remove a sequência completa de 13 cartas da coluna
+static void simonRemoveSequence(SimonState *s, int col) {
+    int c;
+    Card aux;
+    for (c = 0; c < 13; c++) {
+        pilePop(&s->columns[col], &aux);
+    }
+}
+
 //limpa as sequências completas de rei a ás que aparecerem
 void simonUpdate(SimonState *s) {
-    int col, c;
-    Card aux;
-
+    int col;
     for (col = 0; col < 10; col++) {
-        int size = pileSize(&s->columns[col]);
-        if (size >= 13) {   //para uma sequencia tar completa tem que ter pelo menos 13 cartas
-            if (s->columns[col].cards[size - 13].value == 12) { //verificamos se a carta mais abaixo da sequencia é um rei
-                int ok = 0; //contamos quantas cartas estão na ordem correta (ok)
-                for (c = 0; c < 12; c++) { //comparamos as 13 cartas, par a par
-                    Card bellowCard = s->columns[col].cards[size - 13 + c]; //o size -13 é para focar nas ultimas 13 cartas
-                    Card aboveCard = s->columns[col].cards[size - 13 + c + 1];  //usamos o "+ c" ou "+ c + 1" que é para comparar as duas cartas e ver se sao do mesmo naipe e se estao em escada
-                    if (bellowCard.suit == aboveCard.suit && bellowCard.value == aboveCard.value + 1) { //se o par tiver o mesmo naipe e tiver em escada, contamos como "ok"
-                        ok = ok + 1;
-                    }
-                }
-                if (ok == 12) { //se o ok=12, significa que temos as 13 cartas em ordem
-                    for (c = 0; c < 13; c++) { //tiramos essas 13 cartas da mesa
-                        pilePop(&s->columns[col], &aux);    // usamos o pilePop para retirar as cartas da mesa uma a uma 
-                    }                                       // usamos o aux para receber as cartas que o pilePop retira, serve como um "lixo"
-                }
-            }
+        if (simonCheckSequence(s, col) == 1) {
+            simonRemoveSequence(s, col);
         }
     }
 }

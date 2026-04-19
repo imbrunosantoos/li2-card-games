@@ -24,7 +24,7 @@ static void dealCards (GameState *g) {
     Card c;    // Carta temporaria que guarda a carta retirada do baralho 
 
     for (i=0; i< NUM_PILES; i++) {              // Passa pelos 7 montes um a um
-        for (j=0; j < PILE_MAX; j++) {          // Passa pelas 5 cartas uma a uma
+        for (j=0; j < 5; j++) {                 // Golf distribui 5 cartas por monte
             if (deckDraw (&g->deck, &c))        // Tira a primeira carta do baralho
                 pilePush (&g->tableu [i], c);   // Coloca essa carta na mesa 
         }
