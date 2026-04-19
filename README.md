@@ -17,16 +17,16 @@ A collection of terminal-based card games developed in **C** for the **Software 
 
 ## Project Structure
 
-- `fase1_golf/`: Source code and assets for the Golf game.
-- `fase2_simon/`: Source code and assets for the Simple Simon game.
-- `core/`: Shared logic and helper functions used across different games.
+- `phase1_golf/`: Source code and assets for the Golf game.
+- `phase2_simon/`: Source code and assets for the Simple Simon game.
+- `common/`: Shared logic and helper functions used across different games.
 
 ## How to Build and Run
 
 To compile and run the games, navigate to the specific phase folder and use `gcc`:
 
 ```bash
-cd fase1_golf
+cd phase1_golf
 gcc -o golf main.c
 ./golf
 ```
