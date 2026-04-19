@@ -17,19 +17,38 @@ A collection of terminal-based card games developed in **C** for the **Software 
 
 ## Project Structure
 
-- `phase1_golf/`: Source code and assets for the Golf game.
-- `phase2_simon/`: Source code and assets for the Simple Simon game.
-- `common/`: Shared logic and helper functions used across different games.
+- `main.c`: Main entry point for the integrated application.
+- `menu_principal/`: Main menu system to select and launch the different games.
+- `phase1_golf/`: Source code (logic and UI) specific to the Golf game.
+- `phase2_simon/`: Source code (logic and UI) specific to the Simple Simon game.
+- `common/`: Shared logic (cards, decks, piles) and helper functions used across all games.
+- `tests/`: Automated test suite using CUnit.
 
 ## How to Build and Run
 
-To compile and run the games, navigate to the specific phase folder and use `gcc`:
+To compile and run the games, navigate to the specific phase folder:
 
 ```bash
-cd phase1_golf
-gcc -o golf main.c
-./golf
+cd proj
+make
+./cardgames
 ```
+To compile and execute the CUnit logic tests:
+
+```bash
+make test
+```
+To run pmccabe and ensure all functions meet the project requirements (Max 10 cyclomatic complexity, Max 15 instructions):
+
+```bash
+make pmccabe
+```
+To remove all compiled executables and clean the workspace:
+
+```bash
+make clean
+```
+
 ## Authors
 
 **[Bruno Santos](github.com/imbrunosantoos)**
