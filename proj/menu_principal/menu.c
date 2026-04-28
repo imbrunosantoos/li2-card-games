@@ -3,6 +3,7 @@
 
 int mostrarMenuPrincipal() {
     int option;
+    int result;
 
     printf("\n====================================");
     printf("\n          MENU DE JOGOS             ");
@@ -12,6 +13,10 @@ int mostrarMenuPrincipal() {
     printf("\n 0 - Sair do Programa");
     printf("\n------------------------------------");
     printf("\nEscolha uma opcao: ");
-    scanf(" %d", &option);
+
+    result = scanf(" %d", &option);
+    if (result != 1) {
+        return -1;
+    }
     return option;
 }
