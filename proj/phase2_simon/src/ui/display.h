@@ -1,5 +1,5 @@
-#ifndef SIMON_DISPLAY_H
-#define SIMON_DISPLAY_H
+#ifndef DISPLAY_H
+#define DISPLAY_H
 
 #include "../logic/game.h"
 
