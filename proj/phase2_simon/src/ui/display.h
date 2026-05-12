@@ -15,7 +15,4 @@ void simonDisplayWin(void);
 // Mostra mensagem de erro numa jogada inválida
 void simonDisplayInvalidMove(void);
 
-// Mostra uma dica ao jogador
-void displayHint(SimonState *s);
-
 #endif

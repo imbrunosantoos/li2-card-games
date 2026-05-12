@@ -72,10 +72,3 @@ void simonDisplayInvalidMove(void) {
     printf("\n Jogada invalida!\n");
 }
 
-// Mostra uma dica ao jogador
-void displayHint(SimonState *s) {
-    (void)s;  // parametro nao usado ainda
-    printf("\n--- DICA ---\n");
-    printf("Tenta encontrar sequencias do mesmo naipe em ordem decrescente!\n");
-    printf("Exemplo: K♥, Q♥, J♥, 10♥, ..., A♥\n");
-}
