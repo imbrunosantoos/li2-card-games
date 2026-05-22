@@ -11,7 +11,6 @@ typedef struct {
     Card cards[DECK_SIZE]; // 52 cartas 
     int  top;              // Indice da proxima carta a tirar
                            // quando top == 52, o baralho está vazio
-
 } Deck;
 
 // Inicia o baralho com as 52 cartas 

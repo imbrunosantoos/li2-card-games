@@ -8,7 +8,7 @@ Card createCard(int value, Suit suit) {
     return c;        // Devolve a carta preenchida (valor + naipe) 
 }
 
-// Verifica se a carta c pode ser jogada em cima de outra carta
+// Verifica se a carta c pode ser jogada em cima de outra carta(apenas para o golf)
 int cardIsPlayable(Card top, Card c) {
     int diff = top.value - c.value; // Calcula a diferença entre os dois valores
     if (diff < 0) diff = -diff;     // Valor absoluto (sempre positivo)

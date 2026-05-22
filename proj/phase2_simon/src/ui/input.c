@@ -1,50 +1,62 @@
 #include "input.h"
 #include "display.h"
 #include <stdio.h>
+#include <string.h>
 
-int requestMove (SimonState *s) {
-    int readOrigin, readDest, quant;    //variaveis origem, destino e quantidade
-
-    printf ("\n---------- MENU DE JOGADA ----------\n");
-    printf ("ORIGEM (1-10), Undo (99) ou Dica (88): ");
-    scanf(" %d", &readOrigin);
+int requestMove(SimonState *s) {
+    char input[100];
+    int origin, dest, quant;
     
-    // Opção de dica
-    if (readOrigin == 88) {
-        displayHint(s);
-        return 88;
+    printf("\nJogada (origem destino quantidade) ou 'u' para undo: ");
+    fgets(input, 100, stdin);
+    
+    // verifica se o jogador quer fazer undo
+    if (input[0] == 'u' || input[0] == 'U') {
+        return 'u';
     }
     
-    // Opção de undo
-    if (readOrigin == 99) {
-        return 99; //sinal de undo
+    // tenta ler 2 ou 3 numeros da linha
+    int parsed = sscanf(input, "%d %d %d", &origin, &dest, &quant);
+    
+    // tem que ter pelo menos origem e destino
+    if (parsed < 2) {
+        printf("Formato errado! Use: origem destino [quantidade]\n");
+        return 0;
     }
     
-    printf ("DESTINO (1-10): ");
-    scanf(" %d", &readDest);
-    printf ("QUANIDADE: ");
-    scanf(" %d", &quant);
-
-    int origin = readOrigin - 1;    //como as colunas vão estar numeradas de 1 a 10, entao ao comando que o jogador colocar, 
-    int dest = readDest - 1;        //retiramos 1 para converter para indice 
-
+    // se nao digitou quantidade, assume 1
+    if (parsed == 2) {
+        quant = 1;
+    }
+    
+    // valida as colunas
+    if (origin < 1 || origin > 10 || dest < 1 || dest > 10) {
+        printf("Colunas devem estar entre 1 e 10!\n");
+        return 0;
+    }
+    
+    // converte para indice (0 a 9)
+    origin = origin - 1;
+    dest = dest - 1;
+    
+    // executa o movimento
     if (quant == 1) {
-        if (simonMove(s, origin, dest) == 1) {  //apenas move uma carta, s (estado do jogo), origin (coluna de origem) e dest (coluna em que a carta vai ser colocada)
-            printf ("Concluído.\n");            //tem de ser igual a 1 porque signifca que a operação foi concluida sem problemas 
+        if (simonMove(s, origin, dest) == 1) {
+            printf("Movimento feito!\n");
+            simonUpdate(s);
             return 1;
         } else {
-            printf ("Inválido! Tenta novamente.\n");
+            printf("Movimento invalido!\n");
             return 0;
         }
     } else {
-        if (simonMoveSequence (s, origin, dest, quant) == 1) {  //igual ao de cima, simonMove, so que ate tenta mover uma quantidade de cartas juntas da origem para o destino
-            printf ("Concluído.\n");
+        if (simonMoveSequence(s, origin, dest, quant) == 1) {
+            printf("Sequencia movida!\n");
+            simonUpdate(s);
             return 1;
         } else {
-            printf ("Inválido! Tenta novamente.\n");
+            printf("Movimento invalido!\n");
             return 0;
         }
     }
-    simonUpdate(s);
-    return 0;
 }
