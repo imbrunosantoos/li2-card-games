@@ -1,50 +1,52 @@
-CC     = gcc
-CFLAGS = -Wall -Wextra -std=c11 -g \
-         -I./common \
-         -I./phase1_golf/src/logic \
-         -I./phase1_golf/src/ui \
-         -I./phase2_simon/src/logic \
-         -I./phase2_simon/src/ui \
-         -I./menu_principal \
-         -I/opt/homebrew/opt/cunit/include
+all:
+	gcc -o cardgames \
+		main.c \
+		phase3/src/logic/parser.c \
+		phase3/src/ui/menu.c \
+		common/card.c \
+		common/deck.c \
+		common/pile.c \
+		phase1_golf/src/logic/game.c \
+		phase1_golf/src/ui/display.c \
+		phase1_golf/src/ui/input.c \
+		phase1_golf/src/jogar_golf.c \
+		phase2_simon/src/logic/game.c \
+		phase2_simon/src/ui/display.c \
+		phase2_simon/src/ui/input.c \
+		phase2_simon/src/jogar_simon.c \
+		-I./common \
+		-I./phase1_golf/src/logic \
+		-I./phase1_golf/src/ui \
+		-I./phase2_simon/src/logic \
+		-I./phase2_simon/src/ui \
+		-I./phase3/src/logic \
+		-I./phase3/src/ui
 
-LDFLAGS = -L/opt/homebrew/opt/cunit/lib -lcunit
-
-COMMON = common/card.c common/deck.c common/pile.c
-
-# Todos os ficheiros fonte para o programa completo
-ALL_SRC = main.c \
-          menu_principal/menu.c \
-          common/card.c \
-          common/deck.c \
-          common/pile.c \
-          phase1_golf/src/logic/game.c \
-          phase1_golf/src/ui/display.c \
-          phase1_golf/src/ui/input.c \
-          phase1_golf/src/jogar_golf.c \
-          phase2_simon/src/logic/game.c \
-          phase2_simon/src/ui/display.c \
-          phase2_simon/src/ui/input.c \
-          phase2_simon/src/jogar_simon.c
-
-all: cardgames
-
-cardgames: $(ALL_SRC)
-	$(CC) $(CFLAGS) -o cardgames $(ALL_SRC)
-
-# Targets legacy (mantidos para compatibilidade)
-golf: cardgames
-simon: cardgames
-
-# Compila testes
-test: tests/test_logic.c $(COMMON) phase1_golf/src/logic/game.c phase2_simon/src/logic/game.c
-	$(CC) $(CFLAGS) -o tests/test_logic tests/test_logic.c $(COMMON) phase1_golf/src/logic/game.c phase2_simon/src/logic/game.c $(LDFLAGS)
-	./tests/test_logic
+test:
+	gcc -o test \
+		tests/test_logic.c \
+		common/card.c \
+		common/deck.c \
+		common/pile.c \
+		phase1_golf/src/logic/game.c \
+		phase2_simon/src/logic/game.c \
+		-I./common \
+		-I./phase1_golf/src/logic \
+		-I./phase2_simon/src/logic \
+		-lcunit
+	./test
 
 pmccabe:
-	pmccabe -v common/*.c phase1_golf/src/logic/*.c phase1_golf/src/ui/*.c phase2_simon/src/logic/*.c phase2_simon/src/ui/*.c
+	pmccabe \
+		common/card.c \
+		common/deck.c \
+		common/pile.c \
+		phase1_golf/src/logic/game.c \
+		phase1_golf/src/ui/display.c \
+		phase1_golf/src/ui/input.c \
+		phase2_simon/src/logic/game.c \
+		phase2_simon/src/ui/display.c \
+		phase2_simon/src/ui/input.c
 
 clean:
-	rm -f cardgames golf simon tests/test_logic
-
-.PHONY: all golf simon test pmccabe clean
+	rm -f cardgames test
