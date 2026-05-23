@@ -18,15 +18,15 @@ static void handleCommand(GameState *g, Command cmd) {
 
 int playGolf(void) {
     GameState g;
-    gameInit(&g);      // inicializa e baralha
-    golfDisplayHelp();     // mostra comandos
+    gameInit(&g);
 
     Command cmd;
     do {
-        clearTerminalGolf();         //limpa o terminal dps da jogada
-        golfDisplayBoard(&g);         // mostra tabuleiro
-        cmd = inputRead();        // lê comando do jogador
-        handleCommand(&g, cmd);   // executa
+        clearTerminalGolf();
+        golfDisplayBoard(&g);
+        golfDisplayHelp();        // ← move para aqui dentro do loop
+        cmd = inputRead();
+        handleCommand(&g, cmd);
     } while (cmd != CMD_QUIT && !gameIsOver(&g));
 
     if (gameIsOver(&g))
