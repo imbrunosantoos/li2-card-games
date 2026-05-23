@@ -29,10 +29,8 @@ static void golfPrintCard(Card c) {
         printf("| %s%s|", golfValueStr[c.value], golfSuitSymbol[c.suit]);
 }
 
-// Mostra o tabuleiro completo, com o descarte, o baralho e os 7 montes
-void golfDisplayBoard (GameState *g) {
-    int linha = 0;
-    int col;
+// mostra cabecalho com descarte, stock e numeracao das colunas
+static void golfDisplayHeader(GameState *g) {
     Card c;
     printf("\n--- GOLF SOLITAIRE ---\n");
     printf("Descarte: ");
@@ -44,18 +42,29 @@ void golfDisplayBoard (GameState *g) {
     printf("  |  Stock: %d\n\n", 52 - g->deck.top);
     printf("  1      2      3      4      5      6      7\n");
     printf("-----------------------------------------------\n");
-    while (linha < 5) {
-        col = 0;
-        while (col < 7) {
-            if (linha < g->tableu[col].size) {
-                golfPrintCard(g->tableu[col].cards[linha]);
-                printf("  ");
-            } else {
-                printf("       "); 
-            }
-            col++;
+}
+
+// mostra uma linha do tabuleiro (todas as 7 colunas)
+static void golfDisplayLinha(GameState *g, int linha) {
+    int col = 0;
+    while (col < 7) {
+        if (linha < g->tableu[col].size) {
+            golfPrintCard(g->tableu[col].cards[linha]);
+            printf("  ");
+        } else {
+            printf("       ");
         }
-        printf("\n");
+        col++;
+    }
+    printf("\n");
+}
+
+// mostra o tabuleiro completo
+void golfDisplayBoard(GameState *g) {
+    int linha = 0;
+    golfDisplayHeader(g);
+    while (linha < 5) {
+        golfDisplayLinha(g, linha);
         linha++;
     }
 }
