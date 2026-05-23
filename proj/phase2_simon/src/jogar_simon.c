@@ -24,6 +24,7 @@ void playSimon () {
     history[currentTurn] = game;  //chama o estado inicial do jogo
 
     while (simonIsOver (&game) == 0) {  //enquanto jogo não acabou
+        clearTerminalSimon();
         simonDisplayBoard (&game);           //mostra as cartas na mesa
         simonDisplayHelp();                  //instruções para jogar
         int result = requestMove(&game);   //o requestMove pede um movimento ao jogador

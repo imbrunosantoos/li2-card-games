@@ -23,6 +23,7 @@ int playGolf(void) {
 
     Command cmd;
     do {
+        clearTerminalGolf();         //limpa o terminal dps da jogada
         golfDisplayBoard(&g);         // mostra tabuleiro
         cmd = inputRead();        // lê comando do jogador
         handleCommand(&g, cmd);   // executa
