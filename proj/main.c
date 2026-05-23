@@ -1,22 +1,41 @@
 #include <stdio.h>
-#include "menu_principal/menu.h"
+#include <string.h>
+#include "phase3/src/logic/parser.h"
+#include "phase3/src/ui/menu.h"
 
-void playGolf ();
-void playSimon ();
+void playGolf(void);
+void playSimon(void);
 
-int main() {
-    int option = -1;
-    while (option != 0) {
-        option = mostrarMenuPrincipal();
-        if (option == 1) {
-            playGolf();
-        }
-        if (option == 2) {
-            playSimon();
-        }
-        if (option != 1 && option != 2 && option != 0) {
-            printf("\nOpcao Invalida!\n");
-        }
+static void lancarJogo(Paciencia *p) {
+    if (strcmp(p->nome, "Golf") == 0) {
+        playGolf();
+    } else if (strcmp(p->nome, "SimpleSimon") == 0) {
+        playSimon();
+    } else {
+        printf("Paciencia '%s' ainda nao implementada!\n", p->nome);
     }
+}
+
+int main(void) {
+    ListaPaciencias lista = lerPastaPaciencias();
+
+    if (lista.numPaciencias == 0) {
+        printf("Nenhuma paciencia encontrada!\n");
+        return 1;
+    }
+
+    int opcao = mostrarMenu(&lista);
+
+    while (opcao != 0) {
+        if (opcao >= 1 && opcao <= lista.numPaciencias) {
+            Paciencia p = parsePaciencia(lista.caminhos[opcao - 1]);
+            lancarJogo(&p);
+        } else {
+            printf("Opcao invalida!\n");
+        }
+        opcao = mostrarMenu(&lista);
+    }
+
+    printf("Ate logo!\n");
     return 0;
 }
