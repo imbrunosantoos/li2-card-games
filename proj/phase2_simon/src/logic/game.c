@@ -46,34 +46,31 @@ static void transferirCarta(SimonState *s, int origem, int destino) {
     pilePush(&s->columns[destino], carta);
 }
 
-// Esta função serve para mover apenas uma carta de cada vez
+/// Esta função serve para mover apenas uma carta de cada vez
 int simonMove(SimonState *s, int topCol, int destCol) {
     Card movingCard;
     Card destCard;
 
-    if (topCol < 0 || topCol > 9 || destCol < 0 || destCol > 9) {  //verifica se a coluna é valida
+    if (topCol < 0 || topCol > 9 || destCol < 0 || destCol > 9) {
         return 0;
     }
-    if (pileIsEmpty(&s->columns[topCol]) == 1) {  //se a coluna estiver vazia, não há nada para tirar de lá
+    if (pileIsEmpty(&s->columns[topCol]) == 1) {
         return 0;
     }
-    //vemos qual é a carta que vai ser movida
+
     movingCard = pileTop(&s->columns[topCol]);
 
-    if (pileIsEmpty(&s->columns[destCol]) == 1) {   //se a coluna de destino estiver vazia, podemos sempre mover a carta
+    if (pileIsEmpty(&s->columns[destCol]) == 1) {
         transferirCarta(s, topCol, destCol);
         return 1;
     }
 
-    //se a coluna que queremos mover a carta não estiver vazia, so podemos mover a carta se for o valor abaixo
     destCard = pileTop(&s->columns[destCol]);
     if (movingCard.value == destCard.value - 1) {
-        pilePop(&s->columns[topCol], &movingCard);
-        pilePush(&s->columns[destCol], movingCard);
+        transferirCarta(s, topCol, destCol);  // ← mudou aqui
         return 1;
     }
-    
-    //se não for nenhum destes casos nao podemos mover a carta
+
     return 0;
 }
 
