@@ -1,20 +1,8 @@
 #include <stdio.h>
 #include <string.h>
 #include "phase3/src/logic/parser.h"
+#include "phase3/src/logic/game.h"
 #include "phase3/src/ui/menu.h"
-
-void playGolf(void);
-void playSimon(void);
-
-static void lancarJogo(Paciencia *p) {
-    if (strcmp(p->nome, "Golf") == 0) {
-        playGolf();
-    } else if (strcmp(p->nome, "SimpleSimon") == 0) {
-        playSimon();
-    } else {
-        printf("Paciencia '%s' ainda nao implementada!\n", p->nome);
-    }
-}
 
 int main(void) {
     ListaPaciencias lista = lerPastaPaciencias();
@@ -29,7 +17,8 @@ int main(void) {
     while (opcao != 0) {
         if (opcao >= 1 && opcao <= lista.numPaciencias) {
             Paciencia p = parsePaciencia(lista.caminhos[opcao - 1]);
-            lancarJogo(&p);
+            getchar();  // limpa o \n que ficou do scanf
+            jogarPaciencia(&p);
         } else {
             printf("Opcao invalida!\n");
         }
