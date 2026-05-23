@@ -68,7 +68,8 @@ void simonDisplayBoard(SimonState *s) {
 
 // Mostra os comandos disponiveis
 void simonDisplayHelp(void) {
-    printf("\nComandos: Escolhe origem (1-10); Destino (1-10); Quantidade de cartas; Undo (U)\n");
+    printf("\nComandos: origem destino [quantidade] | 'u' para undo\n");
+    printf("Exemplo: '1 4 2' (move 2 cartas da col 1 para 4) | '1 4' (move 1 carta)\n");
 }
 
 // Mostra mensagem de vitoria
