@@ -3,6 +3,9 @@
 
 #include "../logic/game.h"
 
+//funcao que limpa o terminal no jogo golf
+void clearTerminalGolf(void);
+
 // Mostra o tabuleiro completo no terminal
 void golfDisplayBoard (GameState *g);
 

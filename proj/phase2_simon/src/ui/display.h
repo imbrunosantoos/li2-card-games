@@ -3,6 +3,10 @@
 
 #include "../logic/game.h"
 
+//funcao que limpa o terminal no jogo simon
+void clearTerminalSimon(void);
+
+
 // Mostra o tabuleiro completo no terminal
 void simonDisplayBoard(SimonState *s);
 

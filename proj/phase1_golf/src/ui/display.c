@@ -2,6 +2,8 @@
 #include "input.h"
 #include <stdio.h>
 #include <string.h>
+#include <stdlib.h> //para o system
+
 
 // Símbolos UTF-8 para cada naipe, a posição corresponde ao valor do enum
 static const char *golfSuitSymbol[] = {
@@ -20,6 +22,11 @@ static const char *golfValueStr[] = {
     "Q",  // 12
     "K"   // 13
 };
+
+// limpa o terminal
+void clearTerminalGolf(void) {
+    system("clear");
+}
 
 // Imprime uma carta formatada ex: [3♣] ou [7♦]
 static void golfPrintCard(Card c) {

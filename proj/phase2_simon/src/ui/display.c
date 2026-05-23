@@ -1,5 +1,7 @@
 #include "display.h"
 #include <stdio.h>
+#include <stdlib.h>  // para o system
+
 
 // Simbolos UTF-8 para cada naipe
 static const char *simonSuitSymbol[] = {
@@ -18,6 +20,10 @@ static const char *simonValueStr[] = {
     "Q",  // 12
     "K"   // 13
 };
+// limpa o terminal
+void clearTerminalSimon(void) {
+    system("clear");
+}
 
 // Imprime uma carta formatada ex: [3♣] ou [10♦]
 static void simonPrintCard(Card c) {
