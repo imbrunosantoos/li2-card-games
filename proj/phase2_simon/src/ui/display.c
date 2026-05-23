@@ -33,31 +33,34 @@ static void simonPrintCard(Card c) {
         printf("| %s%s|", simonValueStr[c.value], simonSuitSymbol[c.suit]);
 }
 
-// Mostra o tabuleiro com as 10 colunas
-void simonDisplayBoard(SimonState *s) {
-    int linha = 0;
-    int col;
-    
+// mostra cabecalho com nome do jogo e numeracao das colunas
+static void simonDisplayHeader(void) {
     printf("\n--- SIMPLE SIMON ---\n");
     printf("  1      2      3      4      5      6      7      8      9     10\n");
     printf("-------------------------------------------------------------------\n");
-    
-    // mostra ate 13 linhas (maximo de cartas por coluna)
-    while (linha < 13) {
-        col = 0;
-        
-        // percorre as 10 colunas
-        while (col < 10) {
-            // verifica se ha carta nesta posicao
-            if (linha < s->columns[col].size) {
-                simonPrintCard(s->columns[col].cards[linha]);
-                printf("  ");
-            } else {
-                printf("       "); // espaco vazio se nao ha carta
-            }
-            col++;
+}
+
+// mostra uma linha do tabuleiro (todas as 10 colunas)
+static void simonDisplayLinha(SimonState *s, int linha) {
+    int col = 0;
+    while (col < 10) {
+        if (linha < s->columns[col].size) {
+            simonPrintCard(s->columns[col].cards[linha]);
+            printf("  ");
+        } else {
+            printf("       ");
         }
-        printf("\n");
+        col++;
+    }
+    printf("\n");
+}
+
+// mostra o tabuleiro completo
+void simonDisplayBoard(SimonState *s) {
+    int linha = 0;
+    simonDisplayHeader();
+    while (linha < 13) {
+        simonDisplayLinha(s, linha);
         linha++;
     }
     printf("\n");
@@ -65,7 +68,7 @@ void simonDisplayBoard(SimonState *s) {
 
 // Mostra os comandos disponiveis
 void simonDisplayHelp(void) {
-    printf("\nComandos: Escolhe origem (1-10); Destino (1-10); Quantidade de cartas; Undo (99)\n");
+    printf("\nComandos: Escolhe origem (1-10); Destino (1-10); Quantidade de cartas; Undo (U)\n");
 }
 
 // Mostra mensagem de vitoria
