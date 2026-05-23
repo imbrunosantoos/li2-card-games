@@ -39,6 +39,13 @@ void simonInit(SimonState *s) {
     simonDealCards(s);
 }
 
+// transfere a carta do topo de uma coluna para outra
+static void transferirCarta(SimonState *s, int origem, int destino) {
+    Card carta;
+    pilePop(&s->columns[origem], &carta);
+    pilePush(&s->columns[destino], carta);
+}
+
 // Esta função serve para mover apenas uma carta de cada vez
 int simonMove(SimonState *s, int topCol, int destCol) {
     Card movingCard;
@@ -54,8 +61,7 @@ int simonMove(SimonState *s, int topCol, int destCol) {
     movingCard = pileTop(&s->columns[topCol]);
 
     if (pileIsEmpty(&s->columns[destCol]) == 1) {   //se a coluna de destino estiver vazia, podemos sempre mover a carta
-        pilePop(&s->columns[topCol], &movingCard);
-        pilePush(&s->columns[destCol], movingCard);
+        transferirCarta(s, topCol, destCol);
         return 1;
     }
 
