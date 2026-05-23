@@ -5,7 +5,7 @@
 #include "../../../common/pile.h"
 #include "../../../common/deck.h"
 
-#define MAX_PILHAS_JOGO 30
+#define MAX_PILHAS_JOGO 20
 
 // representa uma pilha do jogo a decorrer
 typedef struct {
