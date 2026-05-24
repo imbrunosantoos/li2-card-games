@@ -42,6 +42,8 @@ test:
 		-I./phase1_golf/src/logic \
 		-I./phase2_simon/src/logic \
 		-I./phase3/src/logic \
+		-I/opt/homebrew/Cellar/cunit/2.1-3/include \
+		-L/opt/homebrew/Cellar/cunit/2.1-3/lib \
 		-lcunit
 	./test
 
@@ -55,7 +57,7 @@ pmccabe:
 		phase1_golf/src/ui/input.c \
 		phase2_simon/src/logic/game.c \
 		phase2_simon/src/ui/display.c \
-		phase2_simon/src/ui/input.c
+		phase2_simon/src/ui/input.c \
 		phase3/src/logic/parser.c \
 		phase3/src/logic/engine.c \
 		phase3/src/logic/moviment.c \

@@ -3,14 +3,22 @@
 #include <string.h>
 #include <dirent.h>
 
-// verifica se o ficheiro termina em .paciencia
+/* verifica se o ficheiro termina em .paciencia */
 static int ehFicheiroPaciencia(char *nome) {
     int len = strlen(nome);
-    if (len < 10) return 0;
-    return strcmp(nome + len - 9, "paciencia") == 0;
+    if (len < 11) return 0;
+    return strcmp(nome + len - 10, ".paciencia") == 0;
 }
 
-// le a pasta paciencias/ e guarda os caminhos
+/* adiciona uma paciencia a lista com bounds check */
+static void adicionarPaciencia(ListaPaciencias *lista, char *nome) {
+    if (lista->numPaciencias < MAX_PACIENCIAS) {
+        snprintf(lista->caminhos[lista->numPaciencias], 100, "paciencias/%s", nome);
+        lista->numPaciencias++;
+    }
+}
+
+/* le a pasta paciencias/ e guarda os caminhos */
 ListaPaciencias lerPastaPaciencias(void) {
     ListaPaciencias lista;
     lista.numPaciencias = 0;
@@ -23,22 +31,18 @@ ListaPaciencias lerPastaPaciencias(void) {
 
     struct dirent *entrada;
     while ((entrada = readdir(dir)) != NULL) {
-        if (ehFicheiroPaciencia(entrada->d_name)) {
-            snprintf(lista.caminhos[lista.numPaciencias],
-                     100,
-                     "paciencias/%s",
-                     entrada->d_name);
-            lista.numPaciencias++;
-        }
+        if (ehFicheiroPaciencia(entrada->d_name))
+            adicionarPaciencia(&lista, entrada->d_name);
     }
 
     closedir(dir);
     return lista;
 }
 
-// mostra o menu e devolve indice da paciencia escolhida
+/* mostra o menu e devolve indice da paciencia escolhida */
 int mostrarMenu(ListaPaciencias *lista) {
     int i, opcao;
+    char linha[20];
 
     printf("\n============================\n");
     printf("   ESCOLHE UMA PACIENCIA    \n");
@@ -52,7 +56,7 @@ int mostrarMenu(ListaPaciencias *lista) {
     printf("0. Sair\n");
     printf("----------------------------\n");
     printf("Opcao: ");
-    scanf("%d", &opcao);
-
+    fgets(linha, 20, stdin);
+    sscanf(linha, "%d", &opcao);
     return opcao;
 }

@@ -39,22 +39,14 @@ Card pileTop (Pile *p) {
     return p -> cards [p -> size - 1]; // último elemento válido
 }
 
-// Devolve quantas cartas do topo formam uma sequencia valida
-int pileSequenceSize(Pile *p){
-    int n = 1; // a sequencia tem pelo menos uma carta valida que e a do topo
-    int i = p->size - 1; // indice do topo
-
-    while (i > 0) {
-        // carta atual e a carta abaixo dela
-        int mesmaNaipe = p->cards[i].suit == p->cards[i-1].suit;
-        int valorSeguido = p->cards[i-1].value == p->cards[i].value + 1;
-
-        if (mesmaNaipe && valorSeguido) {
-            n++; // faz parte da sequencia
-            i--;
-        } else {
-            return n; // sequencia terminou
-        }
+/* devolve quantas cartas do topo formam uma sequencia valida */
+int pileSequenceSize(Pile *p) {
+    int n = 1;
+    int i = p->size - 1;
+    while (i > 0 && p->cards[i].suit == p->cards[i-1].suit
+           && p->cards[i-1].value == p->cards[i].value + 1) {
+        n++;
+        i--;
     }
     return n;
 }

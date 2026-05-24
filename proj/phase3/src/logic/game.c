@@ -8,7 +8,7 @@
 
 #define MAX_HISTORICO 100
 
-// le a jogada do utilizador
+/* le a jogada do utilizador */
 static int lerJogada(int *origem, int *destino, int *quantidade) {
     char linha[100];
     printf("Jogada (origem destino [quantidade]) ou 'u' undo 's' save 'l' load 'q' sair: ");
@@ -28,27 +28,21 @@ static int lerJogada(int *origem, int *destino, int *quantidade) {
     return 1;
 }
 
-// trata o resultado da jogada e devolve o novo turno
-static int tratarResultado(Jogo historico[], int turno, Paciencia *p,
-                            int resultado, int origem, int destino, int quantidade) {
-    if (resultado == 'q') return -1;  // ← usa -1 para sair
-    if (resultado == 'u') {
-        if (turno > 0) return turno - 1;
-        printf("Nao ha jogadas para desfazer!\n");
-        return turno;
-    }
-    if (resultado == 's') {
-        saveGame(p->nome, historico[turno].pilhas, historico[turno].numPilhas, "save.txt");
-        return turno;
-    }
-    if (resultado == 'l') {
-        loadGame(historico[turno].pilhas, historico[turno].numPilhas, "save.txt");
-        return turno;
-    }
-    if (resultado == -1) {
-        printf("Formato errado!\n");
-        return turno;
-    }
+/* desfaz a ultima jogada */
+static int tratarUndo(int turno) {
+    if (turno > 0) return turno - 1;
+    printf("Nao ha jogadas para desfazer!\n");
+    return turno;
+}
+
+/* guarda o jogo em ficheiro */
+static int tratarSave(Jogo historico[], int turno, Paciencia *p) {
+    saveGame(p->nome, historico[turno].pilhas, historico[turno].numPilhas, "save.txt");
+    return turno;
+}
+
+/* executa uma jogada e devolve o novo turno */
+static int tratarJogada(Jogo historico[], int turno, int origem, int destino, int quantidade) {
     historico[turno + 1] = historico[turno];
     if (tentarMover(&historico[turno + 1], origem, destino, quantidade)) {
         executarAutomaticos(&historico[turno + 1]);
@@ -58,11 +52,22 @@ static int tratarResultado(Jogo historico[], int turno, Paciencia *p,
     return turno;
 }
 
-// corre o loop principal do jogo
+/* trata o resultado da jogada e devolve o novo turno */
+static int tratarResultado(Jogo historico[], int turno, Paciencia *p,
+                            int resultado, int origem, int destino, int quantidade) {
+    if (resultado == 'q') return -1;
+    if (resultado == 'u') return tratarUndo(turno);
+    if (resultado == 's') return tratarSave(historico, turno, p);
+    if (resultado == 'l') { loadGame(historico[turno].pilhas, historico[turno].numPilhas, "save.txt"); return turno; }
+    if (resultado == -1) { printf("Formato errado!\n"); return turno; }
+    return tratarJogada(historico, turno, origem, destino, quantidade);
+}
+
+/* corre o loop principal do jogo */
 void jogarPaciencia(Paciencia *p) {
     Jogo historico[MAX_HISTORICO];
     int turno = 0;
-    int origem, destino, quantidade;
+    int origem = 0, destino = 0, quantidade = 0;
 
     criarJogo(&historico[0], p);
     executarAutomaticos(&historico[0]);
