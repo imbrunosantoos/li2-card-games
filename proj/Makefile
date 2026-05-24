@@ -5,6 +5,7 @@ all:
 		phase3/src/logic/engine.c \
 		phase3/src/logic/moviment.c \
 		phase3/src/logic/game.c \
+		phase3/src/logic/saveload.c \
 		phase3/src/ui/menu.c \
 		phase3/src/ui/display.c \
 		common/card.c \
