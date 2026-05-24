@@ -5,8 +5,12 @@
 #include "../common/pile.h"
 #include "../phase1_golf/src/logic/game.h"
 #include "../phase2_simon/src/logic/game.h"
+#include "../phase3/src/logic/parser.h"
+#include "../phase3/src/logic/engine.h"
+#include "../phase3/src/logic/moviment.h"
 
-// ========== TESTES GOLF (PHASE 1) ==========
+
+//TESTES GOLF (PHASE 1) 
 
 void test_golf_cardIsPlayable_valid(void) {
     Card top = createCard(5, HEARTS);
@@ -40,7 +44,7 @@ void test_golf_gameInit(void) {
         CU_ASSERT_EQUAL(g.tableu[i].size, 5);
 }
 
-// ========== TESTES SIMON (PHASE 2) ==========
+// TESTES SIMON (PHASE 2) 
 
 void test_simon_init(void) {
     SimonState s;
@@ -81,7 +85,27 @@ void test_simon_pileSequenceSize(void) {
     CU_ASSERT_EQUAL(seq, 2);
 }
 
-// ========== MAIN ==========
+// TESTES (PHASE 3)
+void test_parser_golf(void) {
+    Paciencia p = parsePaciencia("paciencias/golf.paciencia");
+    CU_ASSERT(p.numPilhas > 0);
+}
+
+void test_criar_jogo(void) {
+    Paciencia p = parsePaciencia("paciencias/golf.paciencia");
+    Jogo j;
+    criarJogo(&j, &p);
+    CU_ASSERT(j.numPilhas > 0);
+}
+
+void test_mover_invalido(void) {
+    Paciencia p = parsePaciencia("paciencias/golf.paciencia");
+    Jogo j;
+    criarJogo(&j, &p);
+    CU_ASSERT_EQUAL(tentarMover(&j, -1, 0, 1), 0);
+}
+
+// MAIN
 
 int main(void) {
     CU_initialize_registry();
@@ -100,6 +124,12 @@ int main(void) {
     CU_add_test(sSimon, "simonIsOver", test_simon_is_over_false);
     CU_add_test(sSimon, "pileSequenceSize", test_simon_pileSequenceSize);
 
+    //Suite phase 3
+    CU_pSuite sPhase3 = CU_add_suite("PHASE 3", NULL, NULL);
+    CU_add_test(sPhase3, "parser", test_parser_golf);
+    CU_add_test(sPhase3, "criar jogo", test_criar_jogo);
+    CU_add_test(sPhase3, "mover invalido", test_mover_invalido);
+    
     CU_basic_set_mode(CU_BRM_VERBOSE);
     CU_basic_run_tests();
     CU_cleanup_registry();

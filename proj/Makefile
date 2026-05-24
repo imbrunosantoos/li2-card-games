@@ -35,9 +35,13 @@ test:
 		common/pile.c \
 		phase1_golf/src/logic/game.c \
 		phase2_simon/src/logic/game.c \
+		phase3/src/logic/parser.c \
+		phase3/src/logic/engine.c \
+		phase3/src/logic/moviment.c \
 		-I./common \
 		-I./phase1_golf/src/logic \
 		-I./phase2_simon/src/logic \
+		-I./phase3/src/logic \
 		-lcunit
 	./test
 
@@ -52,6 +56,13 @@ pmccabe:
 		phase2_simon/src/logic/game.c \
 		phase2_simon/src/ui/display.c \
 		phase2_simon/src/ui/input.c
+		phase3/src/logic/parser.c \
+		phase3/src/logic/engine.c \
+		phase3/src/logic/moviment.c \
+		phase3/src/logic/game.c \
+		phase3/src/logic/saveload.c \
+		phase3/src/ui/display.c \
+		phase3/src/ui/menu.c
 
 clean:
 	rm -f cardgames test

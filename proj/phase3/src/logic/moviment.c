@@ -30,6 +30,13 @@ static int sequenciaValida(PilhaJogo *p, int quantidade, char *flags) {
     return 1;
 }
 
+// devolve a cor da carta (0=preto, 1=vermelho)
+static int corCarta(Card c) {
+    if (c.suit == CLUBS || c.suit == SPADES) return 0;
+    return 1;
+}
+
+
 // verifica se a carta pode ir para o destino
 static int podeIrParaDestino(Card carta, PilhaJogo *destino, char *flags) {
     // flag V = destino tem que estar vazio
@@ -48,6 +55,18 @@ static int podeIrParaDestino(Card carta, PilhaJogo *destino, char *flags) {
 
     // flag < = valor imediatamente inferior
     if (temFlag(flags, '<') && carta.value != topo.value - 1) return 0;
+
+    // flag > = valor imediatamente superior
+    if (temFlag(flags, '>') && carta.value != topo.value + 1) return 0;
+
+    // flag D = cor diferente do destino
+    if (temFlag(flags, 'D') && corCarta(carta) == corCarta(topo)) return 0;
+
+    // flag M = mesmo naipe do destino
+    if (temFlag(flags, 'M') && carta.suit != topo.suit) return 0;
+
+    // flag a = carta a mover deve ser As
+    if (temFlag(flags, 'a') && carta.value != 1) return 0;
 
     return 1;
 }
