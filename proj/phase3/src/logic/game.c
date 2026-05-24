@@ -29,38 +29,46 @@ static int lerJogada(int *origem, int *destino, int *quantidade) {
 }
 
 /* desfaz a ultima jogada */
-static int tratarUndo(int turno) {
+static int tratarUndo(int turno, char *mensagem) {
     if (turno > 0) return turno - 1;
-    printf("Nao ha jogadas para desfazer!\n");
+    strcpy(mensagem, "Nao ha jogadas para desfazer!");
     return turno;
 }
 
 /* guarda o jogo em ficheiro */
-static int tratarSave(Jogo historico[], int turno, Paciencia *p) {
+static int tratarSave(Jogo historico[], int turno, Paciencia *p, char *mensagem) {
     saveGame(p->nome, historico[turno].pilhas, historico[turno].numPilhas, "save.txt");
+    strcpy(mensagem, "Jogo guardado!");
     return turno;
 }
 
 /* executa uma jogada e devolve o novo turno */
-static int tratarJogada(Jogo historico[], int turno, int origem, int destino, int quantidade) {
+static int tratarJogada(Jogo historico[], int turno, int origem, int destino, int quantidade, char *mensagem) {
     historico[turno + 1] = historico[turno];
     if (tentarMover(&historico[turno + 1], origem, destino, quantidade)) {
         executarAutomaticos(&historico[turno + 1]);
         return turno + 1;
     }
-    printf("Movimento invalido!\n");
+    strcpy(mensagem, "Movimento invalido!");
     return turno;
 }
 
 /* trata o resultado da jogada e devolve o novo turno */
 static int tratarResultado(Jogo historico[], int turno, Paciencia *p,
-                            int resultado, int origem, int destino, int quantidade) {
+                            int resultado, int origem, int destino, int quantidade, char *mensagem) {
     if (resultado == 'q') return -1;
-    if (resultado == 'u') return tratarUndo(turno);
-    if (resultado == 's') return tratarSave(historico, turno, p);
-    if (resultado == 'l') { loadGame(historico[turno].pilhas, historico[turno].numPilhas, "save.txt"); return turno; }
-    if (resultado == -1) { printf("Formato errado!\n"); return turno; }
-    return tratarJogada(historico, turno, origem, destino, quantidade);
+    if (resultado == 'u') return tratarUndo(turno, mensagem);
+    if (resultado == 's') return tratarSave(historico, turno, p, mensagem);
+    if (resultado == 'l') {
+        loadGame(historico[turno].pilhas, historico[turno].numPilhas, "save.txt");
+        strcpy(mensagem, "Jogo carregado!");
+        return turno;
+    }
+    if (resultado == -1) {
+        strcpy(mensagem, "Formato errado! Ex: 1 3  ou  1 3 2");
+        return turno;
+    }
+    return tratarJogada(historico, turno, origem, destino, quantidade, mensagem);
 }
 
 /* corre o loop principal do jogo */
@@ -68,6 +76,7 @@ void jogarPaciencia(Paciencia *p) {
     Jogo historico[MAX_HISTORICO];
     int turno = 0;
     int origem = 0, destino = 0, quantidade = 0;
+    char mensagem[100] = "";
 
     criarJogo(&historico[0], p);
     executarAutomaticos(&historico[0]);
@@ -76,8 +85,11 @@ void jogarPaciencia(Paciencia *p) {
         system("clear");
         mostrarJogo(&historico[turno]);
         mostrarComandos();
+        if (mensagem[0] != '\0')
+            printf(">> %s\n", mensagem);
+        mensagem[0] = '\0';
         int resultado = lerJogada(&origem, &destino, &quantidade);
-        turno = tratarResultado(historico, turno, p, resultado, origem, destino, quantidade);
+        turno = tratarResultado(historico, turno, p, resultado, origem, destino, quantidade, mensagem);
     }
 
     if (turno >= 0 && turno < MAX_HISTORICO && jogoGanho(&historico[turno])) {

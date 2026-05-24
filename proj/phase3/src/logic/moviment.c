@@ -79,7 +79,6 @@ static int naipeCorValido(Card carta, Card topo, char *flags) {
 /* verifica se a carta pode ir para o destino */
 static int podeIrParaDestino(Card carta, PilhaJogo *destino, char *flags) {
     if (temFlag(flags, 'V') && destino->cartas.size != 0) return 0;
-    if (!cartaEspecialValida(carta, flags)) return 0;
     if (destino->cartas.size == 0) return 1;
     Card topo = pileTop(&destino->cartas);
     if (!valorValido(carta, topo, flags)) return 0;
@@ -124,11 +123,13 @@ static void moverCartas(PilhaJogo *origem, PilhaJogo *destino, int quantidade) {
 /* valida todas as condicoes e executa o movimento */
 static int validarEExecutar(PilhaJogo *pOrigem, PilhaJogo *pDestino,
                              RegraMovimento *regra, int quantidade) {
-    if (temFlag(regra->flags, 'A') && pOrigem->cartas.cards[pOrigem->cartas.size - 1].value != 1) return 0;
-    if (temFlag(regra->flags, 'K') && pOrigem->cartas.cards[pOrigem->cartas.size - 1].value != 13) return 0;
+    Card cartaBase = pOrigem->cartas.cards[pOrigem->cartas.size - quantidade]; /* fundo da sequencia */
+    Card cartaTopo = pOrigem->cartas.cards[pOrigem->cartas.size - 1];          /* topo da sequencia */
+    if (temFlag(regra->flags, 'A') && cartaBase.value != 1) return 0;   /* A = base e As */
+    if (temFlag(regra->flags, 'K') && cartaBase.value != 13) return 0;  /* K = base e Rei */
+    if (!cartaEspecialValida(cartaTopo, regra->flags)) return 0;         /* a/k = topo e As/Rei */
     if (!sequenciaValida(pOrigem, quantidade, regra->flags)) return 0;
-    Card cartaMover = pOrigem->cartas.cards[pOrigem->cartas.size - quantidade];
-    if (!podeIrParaDestino(cartaMover, pDestino, regra->flags)) return 0;
+    if (!podeIrParaDestino(cartaBase, pDestino, regra->flags)) return 0;
     moverCartas(pOrigem, pDestino, quantidade);
     return 1;
 }
