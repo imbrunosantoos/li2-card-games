@@ -4,17 +4,20 @@
 #include <stdio.h>
 #include <string.h>
 #include <stdlib.h>
+#include "saveload.h"
 
 #define MAX_HISTORICO 100
 
 // le a jogada do utilizador
 static int lerJogada(int *origem, int *destino, int *quantidade) {
     char linha[100];
-    printf("Jogada (origem destino [quantidade]) ou 'u' undo ou 'q' sair: ");
+    printf("Jogada (origem destino [quantidade]) ou 'u' undo 's' save 'l' load 'q' sair: ");
     fgets(linha, 100, stdin);
 
     if (linha[0] == 'u' || linha[0] == 'U') return 'u';
     if (linha[0] == 'q' || linha[0] == 'Q') return 'q';
+    if (linha[0] == 's' || linha[0] == 'S') return 's';
+    if (linha[0] == 'l' || linha[0] == 'L') return 'l';
 
     int lidos = sscanf(linha, "%d %d %d", origem, destino, quantidade);
     if (lidos < 2) return -1;
@@ -23,6 +26,36 @@ static int lerJogada(int *origem, int *destino, int *quantidade) {
     *origem  = *origem  - 1;
     *destino = *destino - 1;
     return 1;
+}
+
+// trata o resultado da jogada e devolve o novo turno
+static int tratarResultado(Jogo historico[], int turno, Paciencia *p,
+                            int resultado, int origem, int destino, int quantidade) {
+    if (resultado == 'q') return -1;  // ← usa -1 para sair
+    if (resultado == 'u') {
+        if (turno > 0) return turno - 1;
+        printf("Nao ha jogadas para desfazer!\n");
+        return turno;
+    }
+    if (resultado == 's') {
+        saveGame(p->nome, historico[turno].pilhas, historico[turno].numPilhas, "save.txt");
+        return turno;
+    }
+    if (resultado == 'l') {
+        loadGame(historico[turno].pilhas, historico[turno].numPilhas, "save.txt");
+        return turno;
+    }
+    if (resultado == -1) {
+        printf("Formato errado!\n");
+        return turno;
+    }
+    historico[turno + 1] = historico[turno];
+    if (tentarMover(&historico[turno + 1], origem, destino, quantidade)) {
+        executarAutomaticos(&historico[turno + 1]);
+        return turno + 1;
+    }
+    printf("Movimento invalido!\n");
+    return turno;
 }
 
 // corre o loop principal do jogo
@@ -34,43 +67,15 @@ void jogarPaciencia(Paciencia *p) {
     criarJogo(&historico[0], p);
     executarAutomaticos(&historico[0]);
 
-    while (jogoGanho(&historico[turno]) == 0) {
+    while (turno >= 0 && turno < MAX_HISTORICO && jogoGanho(&historico[turno]) == 0) {
         system("clear");
         mostrarJogo(&historico[turno]);
         mostrarComandos();
-
         int resultado = lerJogada(&origem, &destino, &quantidade);
-
-        if (resultado == 'q') break;
-
-        if (resultado == 'u') {
-            if (turno > 0) {
-                turno--;
-                printf("Voltaste uma jogada!\n");
-            } else {
-                printf("Nao ha jogadas para desfazer!\n");
-            }
-            continue;
-        }
-
-        if (resultado == -1) {
-            printf("Formato errado!\n");
-            continue;
-        }
-
-        // copia o estado atual para o proximo
-        historico[turno + 1] = historico[turno];
-
-        if (tentarMover(&historico[turno + 1], origem, destino, quantidade)) {
-            executarAutomaticos(&historico[turno + 1]);
-            turno++;
-            printf("Movimento feito!\n");
-        } else {
-            printf("Movimento invalido!\n");
-        }
+        turno = tratarResultado(historico, turno, p, resultado, origem, destino, quantidade);
     }
 
-    if (jogoGanho(&historico[turno])) {
+    if (turno >= 0 && turno < MAX_HISTORICO && jogoGanho(&historico[turno])) {
         printf("\nPARABENS! Ganhaste!\n");
     }
 }
