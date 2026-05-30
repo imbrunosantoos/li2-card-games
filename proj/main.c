@@ -17,7 +17,6 @@ int main(void) {
     while (opcao != 0) {
         if (opcao >= 1 && opcao <= lista.numPaciencias) {
             Paciencia p = parsePaciencia(lista.caminhos[opcao - 1]);
-            getchar();  // limpa o \n que ficou do scanf
             jogarPaciencia(&p);
         } else {
             printf("Opcao invalida!\n");
