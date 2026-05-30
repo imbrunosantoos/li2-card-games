@@ -33,6 +33,8 @@ void criarJogo(Jogo *j, Paciencia *p) {
 int jogoGanho(Jogo *j) {
     int i, p;
 
+    if (j->regras.numVitorias == 0) return 0; // sem regras WIN nao se pode ganhar
+
     for (i = 0; i < j->regras.numVitorias; i++) {
         char *tipoVitoria = j->regras.vitorias[i].tipo;
         int cartasNecessarias = j->regras.vitorias[i].numCartas;
