@@ -8,22 +8,27 @@
 
 #define MAX_HISTORICO 100
 
+/* devolve o comando especial (u/q/s/l) ou 0 se for uma jogada normal */
+static int comandoEspecial(char c) {
+    if (c == 'u' || c == 'U') return 'u';
+    if (c == 'q' || c == 'Q') return 'q';
+    if (c == 's' || c == 'S') return 's';
+    if (c == 'l' || c == 'L') return 'l';
+    return 0;
+}
+
 /* le a jogada do utilizador */
 static int lerJogada(int *origem, int *destino, int *quantidade) {
     char linha[100];
     printf("Jogada (origem destino [quantidade]) ou 'u' undo 's' save 'l' load 'q' sair: ");
-    fgets(linha, 100, stdin);
+    if (fgets(linha, 100, stdin) == NULL) return 'q'; // fim do input = sair
 
-    if (linha[0] == 'u' || linha[0] == 'U') return 'u';
-    if (linha[0] == 'q' || linha[0] == 'Q') return 'q';
-    if (linha[0] == 's' || linha[0] == 'S') return 's';
-    if (linha[0] == 'l' || linha[0] == 'L') return 'l';
+    int cmd = comandoEspecial(linha[0]);
+    if (cmd != 0) return cmd;
 
-    int lidos = sscanf(linha, "%d %d %d", origem, destino, quantidade);
-    if (lidos < 2) return -1;
-    if (lidos == 2) *quantidade = 1;
-
-    *origem  = *origem  - 1;
+    *quantidade = 1; // por defeito move so 1 carta
+    if (sscanf(linha, "%d %d %d", origem, destino, quantidade) < 2) return -1;
+    *origem  = *origem  - 1; // o utilizador conta a partir de 1
     *destino = *destino - 1;
     return 1;
 }
@@ -71,6 +76,16 @@ static int tratarResultado(Jogo historico[], int turno, Paciencia *p,
     return tratarJogada(historico, turno, origem, destino, quantidade, mensagem);
 }
 
+/* mostra o tabuleiro e a mensagem do turno atual */
+static void mostrarTurno(Jogo *j, char *mensagem) {
+    system("clear");
+    mostrarJogo(j);
+    mostrarComandos();
+    if (mensagem[0] != '\0')
+        printf(">> %s\n", mensagem);
+    mensagem[0] = '\0';
+}
+
 /* corre o loop principal do jogo */
 void jogarPaciencia(Paciencia *p) {
     Jogo historico[MAX_HISTORICO];
@@ -81,18 +96,13 @@ void jogarPaciencia(Paciencia *p) {
     criarJogo(&historico[0], p);
     executarAutomaticos(&historico[0]);
 
-    while (turno >= 0 && turno < MAX_HISTORICO && jogoGanho(&historico[turno]) == 0) {
-        system("clear");
-        mostrarJogo(&historico[turno]);
-        mostrarComandos();
-        if (mensagem[0] != '\0')
-            printf(">> %s\n", mensagem);
-        mensagem[0] = '\0';
+    /* MAX_HISTORICO - 1 para nunca escrever historico[turno+1] fora do array */
+    while (turno >= 0 && turno < MAX_HISTORICO - 1 && jogoGanho(&historico[turno]) == 0) {
+        mostrarTurno(&historico[turno], mensagem);
         int resultado = lerJogada(&origem, &destino, &quantidade);
         turno = tratarResultado(historico, turno, p, resultado, origem, destino, quantidade, mensagem);
     }
 
-    if (turno >= 0 && turno < MAX_HISTORICO && jogoGanho(&historico[turno])) {
+    if (turno >= 0 && turno < MAX_HISTORICO && jogoGanho(&historico[turno]))
         printf("\nPARABENS! Ganhaste!\n");
-    }
 }
