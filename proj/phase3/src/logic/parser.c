@@ -38,6 +38,7 @@ static void processarBaralhos(Paciencia *p, char *linha) {
 /* processa linha TIPO */
 static void processarTipo(Paciencia *p, char *linha) {
     TipoPilha t;
+    if (p->numTipos >= MAX_TIPOS) return; // ja nao ha espaco para mais tipos
     t.flags[0] = '\0';
     sscanf(linha, "TIPO %49s %29s", t.nome, t.flags);
     p->tipos[p->numTipos] = t;
@@ -47,6 +48,7 @@ static void processarTipo(Paciencia *p, char *linha) {
 /* processa linha INIT */
 static void processarInit(Paciencia *p, char *linha) {
     PilhaInicial pi;
+    if (p->numPilhas >= MAX_PILHAS) return; // ja nao ha espaco para mais pilhas
     sscanf(linha, "INIT %49s %d", pi.tipo, &pi.numCartas);
     p->pilhas[p->numPilhas] = pi;
     p->numPilhas++;
@@ -55,6 +57,7 @@ static void processarInit(Paciencia *p, char *linha) {
 /* processa linha MOV ou AUTO */
 static void processarMov(Paciencia *p, char *linha, int automatico) {
     RegraMovimento r;
+    if (p->numMovimentos >= MAX_MOVIMENTOS) return; // ja nao ha espaco para mais regras
     r.automatico = automatico;
     r.flags[0] = '\0';
     if (automatico) {
@@ -69,6 +72,7 @@ static void processarMov(Paciencia *p, char *linha, int automatico) {
 /* processa linha WIN */
 static void processarWin(Paciencia *p, char *linha) {
     CondicaoVitoria v;
+    if (p->numVitorias >= MAX_TIPOS) return; // ja nao ha espaco para mais condicoes
     sscanf(linha, "WIN %49s %d", v.tipo, &v.numCartas);
     p->vitorias[p->numVitorias] = v;
     p->numVitorias++;
