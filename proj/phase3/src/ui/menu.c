@@ -39,24 +39,28 @@ ListaPaciencias lerPastaPaciencias(void) {
     return lista;
 }
 
-/* mostra o menu e devolve indice da paciencia escolhida */
-int mostrarMenu(ListaPaciencias *lista) {
-    int i, opcao;
-    char linha[20];
-
-    printf("\n============================\n");
-    printf("   ESCOLHE UMA PACIENCIA    \n");
-    printf("============================\n");
-
+/* imprime a lista de paciencias, numeradas */
+static void imprimirOpcoes(ListaPaciencias *lista) {
+    int i;
     for (i = 0; i < lista->numPaciencias; i++) {
         Paciencia p = parsePaciencia(lista->caminhos[i]);
         printf("%d. %s\n", i + 1, p.nome);
     }
+}
 
+/* mostra o menu e devolve indice da paciencia escolhida */
+int mostrarMenu(ListaPaciencias *lista) {
+    int opcao;
+    char linha[20];
+    printf("\n============================\n");
+    printf("   ESCOLHE UMA PACIENCIA    \n");
+    printf("============================\n");
+    imprimirOpcoes(lista);
     printf("0. Sair\n");
     printf("----------------------------\n");
     printf("Opcao: ");
-    fgets(linha, 20, stdin);
+    if (fgets(linha, 20, stdin) == NULL) return 0; // fim do input = sair
+    opcao = 0;
     sscanf(linha, "%d", &opcao);
     return opcao;
 }
