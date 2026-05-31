@@ -72,10 +72,17 @@ static int naipeValido(Card carta, Card topo, char *flags) {
     return 1;
 }
 
+/* a regra precisa de comparar a carta com o topo do destino? */
+static int precisaDeTopo(char *flags) {
+    return temFlag(flags, '<') || temFlag(flags, '>') || temFlag(flags, '~')
+        || temFlag(flags, 'M') || temFlag(flags, 'X')
+        || temFlag(flags, 'C') || temFlag(flags, 'D');
+}
+
 /* ve se a carta de baixo da sequencia pode assentar no destino */
 static int podeAssentar(Card carta, PilhaJogo *destino, char *flags) {
     if (temFlag(flags, 'V') && destino->cartas.size != 0) return 0; // V : destino tem de estar vazio
-    if (destino->cartas.size == 0) return 1;                        // destino vazio aceita qualquer carta
+    if (destino->cartas.size == 0) return !precisaDeTopo(flags);    // vazio: so aceita se a regra nao comparar com o topo
     Card topo = pileTop(&destino->cartas);
     if (!valorValido(carta, topo, flags)) return 0;
     if (!naipeValido(carta, topo, flags)) return 0;
